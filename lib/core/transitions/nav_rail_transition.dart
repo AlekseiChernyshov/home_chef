@@ -6,16 +6,14 @@ import 'package:home_chef/core/core.dart';
 class NavRailTransition extends StatefulWidget {
   const NavRailTransition({
     super.key,
-    required this.animation, // Анимация, которая управляет переходом.
-    required this.backgroundColor, // Цвет фона для анимации.
-    required this.child, // Дочерний виджет, который будет анимирован.
-    required this.railWidth,
+    required this.animation,
+    required this.backgroundColor,
+    required this.child,
   });
 
-  final Animation<double> animation; // Родительская анимация.
-  final Widget child; // Дочерний виджет, который анимируется.
-  final Color backgroundColor; // Цвет фона для анимации.
-  final double railWidth; // Ширина рельсов.
+  final Animation<double> animation;
+  final Widget child;
+  final Color backgroundColor;
 
   @override
   State<NavRailTransition> createState() => _NavRailTransitionState();
@@ -30,39 +28,31 @@ class _NavRailTransitionState extends State<NavRailTransition> {
   // Анимация смещения (OffsetAnimation).
   // Используется для плавного перемещения дочернего виджета.
   late final Animation<Offset> offsetAnimation = Tween<Offset>(
-    begin: ltr ? const Offset(-1, 0) : const Offset(1, 0), // Начальное смещение.
-    end: Offset.zero, // Конечное смещение (виджет на своём месте).
+    begin: ltr ? const Offset(-1, 0) : const Offset(1, 0),
+    end: Offset.zero,
   ).animate(OffsetAnimation(parent: widget.animation));
 
   // Анимация изменения ширины (SizeAnimation).
   // Используется для плавного изменения ширины дочернего виджета.
   late final Animation<double> widthAnimation = Tween<double>(
-    begin: 0, // Начальная ширина (0 — виджет скрыт).
-    end: 1, // Конечная ширина (1 — виджет полностью виден).
+    begin: 0,
+    end: 1,
   ).animate(SizeAnimation(parent: widget.animation));
 
   @override
   Widget build(BuildContext context) {
     return ClipRect(
-      // ClipRect обрезает содержимое, чтобы оно не выходило за пределы виджета.
       child: DecoratedBox(
-        // DecoratedBox добавляет фон для анимации.
         decoration: BoxDecoration(color: widget.backgroundColor),
         child: AnimatedBuilder(
-          // AnimatedBuilder перестраивает виджет при изменении анимации.
           animation: widthAnimation,
           builder: (context, child) {
             return Align(
-              // Align выравнивает дочерний виджет по верхнему левому краю.
               alignment: Alignment.topLeft,
-              // widthFactor управляет шириной дочернего виджета.
               widthFactor: widthAnimation.value,
               child: FractionalTranslation(
-                // FractionalTranslation применяет смещение к дочернему виджету.
                 translation: offsetAnimation.value,
-                child: SizedBox(
-                  width: widget.railWidth,
-                    child: widget.child), // Дочерний виджет, который анимируется.
+                child: widget.child,
               ),
             );
           },
