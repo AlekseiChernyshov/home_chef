@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:home_chef/core/core.dart';
+import 'package:home_chef/feature/feature.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -58,30 +60,50 @@ class SearchDetailsScreen extends StatelessWidget {
   }
 }
 
-class FavoritePage extends StatelessWidget {
-  const FavoritePage({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text('Favorite Page')),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            context.pushNamed(AppRoutes.intermediateScreenRoute);
-          },
-          child: Text('Go to intermediate screen'),
-        ),
-      ),);
-  }
-}
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
+  Widget _trailingActions(BuildContext context) {
+    final themeBloc = context.read<ThemeBloc>();
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, state) {
+        return Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Flexible(
+                child: BrightnessButton(
+                  handleBrightnessChange: (value) =>
+                      themeBloc.add(ToggleThemeEvent(value)),
+                  showTooltipBelow: false,
+                ),
+              ),
+              Flexible(
+                child: ColorSeedButton(
+                  handleColorSelect: (index) => context
+                      .read<ThemeBloc>()
+                      .add(ChangeColorSeedEvent(ColorSeed.values[index])),
+                  colorSelected: state.colorSeed,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: Text('Settings Page')));
+    return Scaffold(
+      appBar: AppBar(title: Text('Settings Page')),
+      body: Column(
+        children: [
+          _trailingActions(context),
+        ],
+      ),);
   }
 }
 
@@ -110,8 +132,8 @@ class IntermediateScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Intermediate Page'),
-        ),
+      appBar: AppBar(title: Text('Intermediate Page'),
+      ),
       body: Center(
         child: ElevatedButton(
           onPressed: () {

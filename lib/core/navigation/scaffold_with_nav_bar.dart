@@ -18,9 +18,6 @@ class ScaffoldWithNavBar extends StatefulWidget {
 
 class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar>
     with SingleTickerProviderStateMixin {
-  late final _colorScheme = Theme.of(context).colorScheme;
-  late final _backgroundColor = Color.alphaBlend(
-      _colorScheme.primary.withValues(alpha: 0.14), _colorScheme.surface);
 
   late final _controller = AnimationController(
       duration: const Duration(milliseconds: 1000),
@@ -66,8 +63,20 @@ class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar>
     super.dispose();
   }
 
+  void _goBranch(int index) {
+    widget.navigationShell.goBranch(
+        index,
+        initialLocation: index == widget.navigationShell.currentIndex);
+  }
+
   @override
   Widget build(BuildContext context) {
+     final colorScheme = Theme.of(context).colorScheme;
+
+     final Color backgroundColor = Color.alphaBlend(
+      colorScheme.primary.withValues(alpha: 0.08), // Оттенок поверх `surface`
+      colorScheme.surface, // Базовый цвет
+    );
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, _) {
@@ -77,13 +86,8 @@ class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar>
               AppNavRail(
                 railAnimation: _railAnimation,
                 selectedIndex: widget.navigationShell.currentIndex,
-                backgroundColor: _backgroundColor,
-                onDestinationSelected: (index) {
-                  widget.navigationShell.goBranch(
-                    index,
-                    initialLocation: index == widget.navigationShell.currentIndex,
-                  );
-                },
+                backgroundColor: backgroundColor,
+                onDestinationSelected: _goBranch,
               ),
               Expanded(
                 child: widget.navigationShell,
@@ -91,14 +95,10 @@ class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar>
             ],
           ),
           bottomNavigationBar: AppBottomNavBar(
+            backgroundColor: backgroundColor,
             barAnimation: _barAnimation,
             selectedIndex: widget.navigationShell.currentIndex,
-            onDestinationSelected: (index) {
-              widget.navigationShell.goBranch(
-                index,
-                initialLocation: index == widget.navigationShell.currentIndex,
-              );
-            },
+            onDestinationSelected: _goBranch,
           ),
         );
       },

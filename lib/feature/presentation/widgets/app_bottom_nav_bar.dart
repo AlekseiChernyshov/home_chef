@@ -4,12 +4,14 @@ import 'package:home_chef/core/core.dart';
 class AppBottomNavBar extends StatelessWidget {
   const AppBottomNavBar({
     super.key,
-    required this.barAnimation,                       // Add this parameter
+    required this.backgroundColor,
+    required this.barAnimation,                       
     required this.selectedIndex,
     this.onDestinationSelected,
   });
 
-  final BarAnimation barAnimation;                   // Add this variable
+  final Color backgroundColor;
+  final BarAnimation barAnimation;                   
   final int selectedIndex;
   final ValueChanged<int>? onDestinationSelected;
 
@@ -17,14 +19,15 @@ class AppBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomBarTransition(
       animation: barAnimation,
-      backgroundColor: Colors.white,
+      backgroundColor: backgroundColor,
       child: NavigationBar(
         elevation: 0,
-        backgroundColor: Colors.white,
-        destinations: destinations.map<NavigationDestination>((d) {
+        backgroundColor: backgroundColor,
+        destinations: destinations.map<NavigationDestination>((destination) {
           return NavigationDestination(
-            icon: Icon(d.icon),
-            label: d.label,
+            icon: Icon(destination.icon),
+            label: destination.label,
+            selectedIcon: Icon(destination.selectedIcon),
           );
         }).toList(),
         selectedIndex: selectedIndex,

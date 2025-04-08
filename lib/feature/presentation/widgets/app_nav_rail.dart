@@ -15,10 +15,6 @@ class AppNavRail extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int>? onDestinationSelected;
 
-  final NavigationRailLabelType showLabels = NavigationRailLabelType.all;
-  final NavigationRailLabelType hideLabels = NavigationRailLabelType.none;
-
-
   @override
   Widget build(BuildContext context) {
     return NavRailTransition(
@@ -26,17 +22,19 @@ class AppNavRail extends StatelessWidget {
       backgroundColor: backgroundColor,
       child: NavigationRail(
         selectedIndex: selectedIndex,
-        backgroundColor: backgroundColor,
         onDestinationSelected: onDestinationSelected,
-        groupAlignment: -0.85,
-        extended: false, // Управляем расширением текста.
-        //labelType: isExtended ? hideLabels : showLabels,
-        destinations: destinations.map((d) {
-          return NavigationRailDestination(
-            icon: Icon(d.icon),
-            label: Text(d.label),
-          );
-        }).toList(),
+        backgroundColor: backgroundColor,
+
+        groupAlignment: 0.0,
+        labelType: NavigationRailLabelType.selected,
+        destinations:
+            destinations.map((destination) {
+              return NavigationRailDestination(
+                icon: Icon(destination.icon),
+                label: Text(destination.label),
+                selectedIcon: Icon(destination.selectedIcon),
+              );
+            }).toList(),
       ),
     );
   }
